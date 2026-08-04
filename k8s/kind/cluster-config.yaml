@@ -1,0 +1,19 @@
+# kind cluster: 1 control-plane (master) + 3 workers
+# Maps host :30001 -> control-plane NodePort 30001 for easy local access
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: zot
+nodes:
+  - role: control-plane
+    extraPortMappings:
+      - containerPort: 30001
+        hostPort: 30001
+        protocol: TCP
+  - role: worker
+    extraMounts:
+      - hostPath: /tmp/zot-kind-data
+        containerPath: /data/zot-registry
+  - role: worker
+  - role: worker
+networking:
+  apiServerAddress: "127.0.0.1"

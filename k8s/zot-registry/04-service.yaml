@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zot-registry
+  namespace: zot-registry
+  labels:
+    app.kubernetes.io/name: zot
+    app.kubernetes.io/component: registry
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: zot
+    app.kubernetes.io/component: registry
+  ports:
+    - name: http
+      # In-cluster: zot-registry.zot-registry.svc.cluster.local:30001
+      # External:   <any-node-ip>:30001  or  zot-registry:30001 (via /etc/hosts)
+      port: 30001
+      targetPort: http
+      nodePort: 30001
+      protocol: TCP
