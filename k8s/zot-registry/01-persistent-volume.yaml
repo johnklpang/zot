@@ -1,0 +1,49 @@
+# HostPath PV for bare-metal / kind clusters.
+# On the chosen worker node, ensure the directory exists:
+#   sudo mkdir -p /data/zot-registry && sudo chmod 777 /data/zot-registry
+# Then label that worker:
+#   kubectl label node <worker-name> zot-registry/storage=true --overwrite
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zot-registry-pv
+  labels:
+    app.kubernetes.io/name: zot
+    app.kubernetes.io/component: registry
+    type: local
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: zot-local-storage
+  hostPath:
+    path: /data/zot-registry
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: zot-registry/storage
+              operator: In
+              values:
+                - "true"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: zot-registry-pvc
+  namespace: zot-registry
+  labels:
+    app.kubernetes.io/name: zot
+    app.kubernetes.io/component: registry
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: zot-local-storage
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: zot-registry-pv
