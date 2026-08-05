@@ -29,4 +29,38 @@ curl -s http://zot-registry:30001/v2/_catalog | jq
   ]
 }
 
+curl -s \
+http://zot-registry:30001/v2/demo/nginx/tags/list | jq
+
+root@k8s-master:~/agrocd/argocd-airgap# curl -s \
+http://zot-registry:30001/v2/demo/nginx/tags/list | jq
+{
+  "name": "demo/nginx",
+  "tags": [
+    "latest"
+  ]
+}
+root@k8s-master:~/agrocd/argocd-airgap#
+
+
+value.yaml
+image:
+  repository: zot-registry:30001/demo/nginx
+
+helm install nginx ./nginx-chart
+
+helm upgrade --install nginx ./nginx-chart
+
+image:
+  repository: zot-registry:30001/demo/nginx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+
+
+ctr -n k8s.io images pull --plain-http zot-registry:30001/demo/nginx:latest
+
+
+
+
 
