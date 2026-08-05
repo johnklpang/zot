@@ -1,0 +1,32 @@
+skopeo copy \
+docker-daemon:nginx:latest \
+docker://zot-registry:30001/demo/nginx:latest \
+--dest-tls-verify=false
+
+
+skopeo copy \
+oci-archive:/tmp/nginx.tar \
+docker://zot-registry:30001/demo/nginx:latest \
+--dest-tls-verify=false
+
+
+skopeo copy \
+docker://docker.io/library/nginx:latest \
+docker://zot-registry:30001/demo/nginx:latest \
+--dest-tls-verify=false
+
+
+curl -s http://zot-registry:30001/v2/_catalog | jq
+
+ curl -s http://zot-registry:30001/v2/_catalog | jq
+{
+  "repositories": [
+    "argoproj/argocd",
+    "demo/alpine",
+    "demo/nginx",
+    "dexidp/dex",
+    "docker/library/redis"
+  ]
+}
+
+
